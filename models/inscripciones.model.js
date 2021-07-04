@@ -1,11 +1,11 @@
 const { Schema, model } = require('mongoose');
 
 const InscripcionesSchema = Schema({
-    Materia: {
+    materia: {
       type: Schema.Types.ObjectId,
       ref: 'Materia',
     },
-    Estudiante: {
+    estudiante: {
       type: Schema.Types.ObjectId,
       ref: 'Estudiante',
     }

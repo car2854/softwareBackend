@@ -1,5 +1,5 @@
 /*
-  Path: 'api/auth'
+  Path: 'api/estudiante'
 */
 
 const { Router } = require('express');
@@ -8,11 +8,13 @@ const { check } = require('express-validator');
 const router = Router();
 
 const { validateFields } = require('../middleware/validate-fileds');
+const { validarJWT } = require('../middleware/validate-jwt');
 
-const { createEstudiante } = require('../controllers/estudiante.controller');
+const { createEstudiante, inscripcionEstudiante } = require('../controllers/estudiante.controller');
 
 
 router.post('/', [
+    validarJWT,
     check('email', 'El email es obligatorio').isEmail(),
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('ci', 'La ci es obligatorio').not().isEmpty(),
@@ -24,5 +26,13 @@ router.post('/', [
   createEstudiante
 );
 
+router.post('/inscripcion', [
+    validarJWT,
+    check('estudiante', 'El la id del estudiante obligatorio').isMongoId(),
+    check('materia', 'El la id de la materia obligatorio').isMongoId(),
+    validateFields
+  ],
+  inscripcionEstudiante
+);
 
 module.exports = router;

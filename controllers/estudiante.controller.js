@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt');
 
 const Estudiante = require('../models/estudiante.model');
+const Inscripciones = require('../models/inscripciones.model');
 
 const createEstudiante = async(req, res = response) => {
 
@@ -29,13 +30,39 @@ const createEstudiante = async(req, res = response) => {
 
     await estudiante.save();
 
-    // generar token
-    const token = await generarJWT(estudiante.id);
-
     res.json({
       ok: true,
       estudiante,
-      token
+    });
+    
+  } catch (error) {
+    
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Consulte con el administrador"
+    });
+
+  }
+
+
+}
+
+
+const inscripcionEstudiante = async(req, res = response) => {
+
+  const { estudiante ,materia } = req.body;
+
+  try {
+    
+
+    const inscripciones = new Inscripciones(req.body);
+
+    await inscripciones.save();
+
+    res.json({
+      ok: true,
+      inscripciones,
     });
     
   } catch (error) {
@@ -52,5 +79,6 @@ const createEstudiante = async(req, res = response) => {
 }
 
 module.exports = {
-  createEstudiante
+  createEstudiante,
+  inscripcionEstudiante
 }

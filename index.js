@@ -25,6 +25,8 @@ app.use(express.static('public'));
 app.use( '/api/auth', require('./routes/auth') );
 app.use( '/api/profesor', require('./routes/profesor') );
 app.use( '/api/estudiante', require('./routes/estudiante') );
+app.use( '/api/materia', require('./routes/materia') );
+app.use( '/api/examen', require('./routes/examen') );
 
 app.get('*', (req, res) => {
   res.sendFile( path.resolve(__dirname, 'public/index.html') );
