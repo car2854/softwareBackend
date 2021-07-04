@@ -10,7 +10,7 @@ const router = Router();
 const { validateFields } = require('../middleware/validate-fileds');
 
 const { validarJWT } = require('../middleware/validate-jwt');
-const { loginProfesor, loginEstudiante, renewToken } = require('../controllers/auth.controller');
+const { loginProfesor, loginEstudiante, renewTokenEstudiante, renewTokenProfesor } = require('../controllers/auth.controller');
 
 
 router.post('/login/profesor', 
@@ -31,7 +31,9 @@ router.post('/login/estudiante',
   loginEstudiante
 );
 
-router.get('/renew',validarJWT ,renewToken);
+router.get('/renewProfesor',validarJWT ,renewTokenProfesor);
+
+router.get('/renewEstudiante',validarJWT ,renewTokenEstudiante);
 
 
 module.exports = router;

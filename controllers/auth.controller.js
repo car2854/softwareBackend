@@ -102,7 +102,31 @@ const loginEstudiante = async(req, res = response) => {
 
 }
 
-const renewToken = async(req,res = response) => {
+const renewTokenEstudiante = async(req,res = response) => {
+
+  const uid = req.uid;
+  
+  // Generar JWT
+  const token = await generarJWT(uid);
+
+  // Obtener el usuario por UID
+  try {
+      const estudianteDB = await Estudiante.findById(uid);
+      res.json({
+          ok: true,
+          token,
+          estudianteDB: estudianteDB
+      });
+  } catch (error) {
+      console.log(error);
+      return res.status(500).json({
+          'ok': false,
+          'mensaje': 'Error, consulte con el administrador'
+      });
+  }
+}
+
+const renewTokenProfesor = async(req,res = response) => {
 
   const uid = req.uid;
   
@@ -129,5 +153,6 @@ const renewToken = async(req,res = response) => {
 module.exports = {
   loginProfesor,
   loginEstudiante,
-  renewToken
+  renewTokenEstudiante,
+  renewTokenProfesor
 }
