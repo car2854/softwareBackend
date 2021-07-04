@@ -112,11 +112,20 @@ const renewTokenEstudiante = async(req,res = response) => {
   // Obtener el usuario por UID
   try {
       const estudianteDB = await Estudiante.findById(uid);
+
+      if (!estudianteDB){
+        return res.status(404).json({
+          ok: false,
+          msg: "No existe ese estudiante"
+        })
+      }
+
       res.json({
-          ok: true,
-          token,
-          estudianteDB: estudianteDB
+        ok: true,
+        token,
+        estudianteDB: estudianteDB
       });
+
   } catch (error) {
       console.log(error);
       return res.status(500).json({
@@ -136,6 +145,14 @@ const renewTokenProfesor = async(req,res = response) => {
   // Obtener el usuario por UID
   try {
       const profesorDB = await Profesor.findById(uid);
+
+      if (!profesorDB){
+        return res.status(404).json({
+          ok: false,
+          msg: "No existe ese profesor"
+        })
+      }
+
       res.json({
           ok: true,
           token,
