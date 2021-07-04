@@ -10,8 +10,12 @@ const router = Router();
 const { validateFields } = require('../middleware/validate-fileds');
 const { validarJWT } = require('../middleware/validate-jwt');
 
-const { createEstudiante, inscripcionEstudiante } = require('../controllers/estudiante.controller');
-
+const { 
+  createEstudiante, 
+  inscripcionEstudiante, 
+  getEstudiantes, 
+  ingresarExamen,
+} = require('../controllers/estudiante.controller');
 
 router.post('/', [
     validarJWT,
@@ -34,5 +38,15 @@ router.post('/inscripcion', [
   ],
   inscripcionEstudiante
 );
+
+router.post('/ingresar', [
+    validarJWT,
+    check('examen', 'El la id del examen obligatorio').isMongoId(),
+    validateFields
+  ],
+  ingresarExamen
+);
+
+router.get('/', validarJWT, getEstudiantes);
 
 module.exports = router;

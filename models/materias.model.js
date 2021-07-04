@@ -5,6 +5,10 @@ const MateriasSchema = Schema({
         type: String,
         required: true,
     },
+    descripcion: {
+      type: String,
+      required: true,
+    },
     profesor: {
       type: Schema.Types.ObjectId,
       ref: 'Profesor',
