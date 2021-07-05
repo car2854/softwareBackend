@@ -17,7 +17,6 @@ router.post('/', [
     validarJWT,
     check('nombre', 'El nombre es obligatorio').not().isEmpty(),
     check('descripcion', 'La descripcion es obligatorio').not().isEmpty(),
-    check('id', 'El id del profesor es invalido').isMongoId(),
     validateFields
   ],
   createMateria
