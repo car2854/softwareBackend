@@ -22,7 +22,7 @@ router.post('/', [
   createProfesor
 );
 
-router.ger('/', getProfesores);
+router.get('/', getProfesores);
 
 
 module.exports = router;
