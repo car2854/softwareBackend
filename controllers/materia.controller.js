@@ -165,7 +165,7 @@ const getMateriasEstudiante = async(req, res = response) => {
   try {
 
 
-    const materiasDB = await Inscripciones.find({estudiante});
+    const materiasDB = await Inscripciones.find({estudiante}).populate('materia');
 
     res.json({
       ok: true,
