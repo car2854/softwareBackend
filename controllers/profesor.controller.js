@@ -51,6 +51,34 @@ const createProfesor = async(req, res = response) => {
 
 }
 
+const getProfesores = async(req, res = response) => {
+
+  const profesor = req.uid;
+
+  try {
+
+
+    const profesores = await Profesor.find();
+    
+    res.json({
+      ok: true,
+      profesores,
+    });
+    
+  } catch (error) {
+    
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Consulte con el administrador"
+    });
+
+  }
+
+
+}
+
 module.exports = {
-  createProfesor
+  createProfesor,
+  getProfesores
 }
