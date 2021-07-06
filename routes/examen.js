@@ -28,5 +28,4 @@ router.get('/', validarJWT, getExamenes);
 
 router.get('/:id', validarJWT, getExamen);
 
-
 module.exports = router;

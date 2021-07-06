@@ -130,7 +130,6 @@ const getExamenes = async(req, res = response) => {
 }
 
 const getMateria = async(req, res = response) => {
-
   const profesor = req.uid;
   const _id = req.params.id;
 
@@ -157,10 +156,40 @@ const getMateria = async(req, res = response) => {
 
 }
 
+const getMateriasEstudiante = async(req, res = response) => {
+
+  console.log('hola');
+
+  const estudiante = req.uid;
+
+  try {
+
+
+    const materiasDB = await Inscripciones.find({estudiante});
+
+    res.json({
+      ok: true,
+      materiasDB,
+    });
+    
+  } catch (error) {
+    
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Consulte con el administrador"
+    });
+
+  }
+
+
+}
+
 module.exports = {
   createMateria,
   getMaterias,
   getEstudiantesMateria,
   getExamenes,
-  getMateria
+  getMateria,
+  getMateriasEstudiante
 }
