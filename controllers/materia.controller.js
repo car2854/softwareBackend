@@ -109,7 +109,7 @@ const getExamenes = async(req, res = response) => {
   try {
 
 
-    const listaExamenes = await Examen.find({materia});
+    const listaExamenes = await Examen.find({materia}).populate('materia');
 
     res.json({
       ok: true,
