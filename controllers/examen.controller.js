@@ -99,8 +99,37 @@ const getExamenes = async(req, res = response) => {
 
 }
 
+const getExamen = async(req, res = response) => {
+
+  const profesor = req.uid;
+  const _id = req.params.id;
+
+  try {
+
+
+    const examen = await Examen.findById({_id}).populate('materia');
+
+    res.json({
+      ok: true,
+      examen,
+    });
+    
+  } catch (error) {
+    
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Consulte con el administrador"
+    });
+
+  }
+
+
+}
+
 module.exports = {
   createExamen,
   getListaEstudiantes,
-  getExamenes
+  getExamenes,
+  getExamen
 }

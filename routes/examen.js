@@ -10,7 +10,7 @@ const { validateFields } = require('../middleware/validate-fileds');
 const router = Router();
 
 const { validarJWT } = require('../middleware/validate-jwt');
-const { createExamen, getListaEstudiantes, getExamenes } = require('../controllers/examen.controller');
+const { createExamen, getListaEstudiantes, getExamenes, getExamen } = require('../controllers/examen.controller');
 
 
 router.post('/', [
@@ -25,5 +25,8 @@ router.post('/', [
 router.get('/estudiantes/:examen', validarJWT, getListaEstudiantes);
 
 router.get('/', validarJWT, getExamenes);
+
+router.get('/:id', validarJWT, getExamen);
+
 
 module.exports = router;
