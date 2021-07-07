@@ -8,14 +8,15 @@ const Ingreso = require('../models/ingreso.model');
 
 const createExamen = async(req, res = response) => {
 
-  const { descripcion, id } = req.body;
+  const { descripcion, id, titulo } = req.body;
 
   try {
 
     const data = {
       descripcion,
       materia: id,
-      profesor: req.uid
+      profesor: req.uid,
+      titulo
     }
 
     const examen = new Examen(data);

@@ -1,6 +1,10 @@
 const { Schema, model } = require('mongoose');
 
 const ExamenSchema = Schema({
+    titulo: {
+      type: String,
+      require: true,
+    },
     descripcion: {
       type: String,
       require: true,

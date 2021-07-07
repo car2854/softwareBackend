@@ -17,6 +17,7 @@ router.post('/', [
     validarJWT,
     check('descripcion', 'La descripcion es obligatorio').not().isEmpty(),
     check('id', 'El id de la materia es obligatorio').isMongoId(),
+    check('titulo', 'El titulo es obligatorio').not().isEmpty(),
     validateFields
   ],
   createExamen
