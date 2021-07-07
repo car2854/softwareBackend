@@ -16,15 +16,12 @@ const EstudianteSchema = Schema({
     },
     foto1: {
         type: String,
-        required: true,
     },
     foto2: {
         type: String,
-        required: true,
     },
     foto3: {
         type: String,
-        required: true,
     }
 });
 
