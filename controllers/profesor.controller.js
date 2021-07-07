@@ -78,7 +78,43 @@ const getProfesores = async(req, res = response) => {
 
 }
 
+const getProfesor = async(req, res = response) => {
+
+  const profesor = req.uid;
+  const _id = req.params.id;
+
+  try {
+
+
+    const profesor = await Profesor.findById({_id});
+    
+    if(!profesor){
+      return res.status(404).json({
+        ok: false,
+        msg: "No existe ese profesor"
+      });
+    }
+
+    res.json({
+      ok: true,
+      profesor,
+    });
+    
+  } catch (error) {
+    
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Consulte con el administrador"
+    });
+
+  }
+
+
+}
+
 module.exports = {
   createProfesor,
-  getProfesores
+  getProfesores,
+  getProfesor
 }
