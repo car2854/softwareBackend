@@ -61,9 +61,13 @@ const inscripcionEstudiante = async(req, res = response) => {
 
     await inscripciones.save();
 
+
+    const estudianteDB = await Estudiante.findById(inscripciones.estudiante);
+
     res.json({
       ok: true,
       inscripciones,
+      estudianteDB
     });
     
   } catch (error) {
@@ -78,6 +82,50 @@ const inscripcionEstudiante = async(req, res = response) => {
 
 
 }
+
+
+const uninscripcionEstudiante = async(req, res = response) => {
+
+  const id = req.params.id;
+  const materia = req.params.materia;
+
+  try {
+    
+    const data = {
+      materia     : materia,
+      estudiante  : id
+    }
+
+    const inscripcionDB = await Inscripciones.findOne(data);
+
+    if (!inscripcionDB){
+      return res.status(404).json({
+        ok: false,
+        msg: "No existe esa inscripcion"
+      });
+    }
+
+    const inscripcion = await Inscripciones.findByIdAndRemove(inscripcionDB._id);
+
+    res.json({
+      ok: true,
+      inscripcion
+    });
+    
+  } catch (error) {
+    
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Consulte con el administrador"
+    });
+
+  }
+
+
+}
+
+
 
 const getEstudiantes = async(req, res = response) => {
 
@@ -151,5 +199,6 @@ module.exports = {
   createEstudiante,
   inscripcionEstudiante,
   getEstudiantes,
-  ingresarExamen
+  ingresarExamen,
+  uninscripcionEstudiante
 }

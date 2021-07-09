@@ -15,6 +15,7 @@ const {
   inscripcionEstudiante, 
   getEstudiantes, 
   ingresarExamen,
+  uninscripcionEstudiante
 } = require('../controllers/estudiante.controller');
 
 router.post('/', [
@@ -27,6 +28,13 @@ router.post('/', [
   createEstudiante
 );
 
+router.delete('/:id/:materia', [
+    validarJWT
+  ],
+  uninscripcionEstudiante
+);
+
+
 router.post('/inscripcion', [
     validarJWT,
     check('estudiante', 'El la id del estudiante obligatorio').isMongoId(),
@@ -35,6 +43,7 @@ router.post('/inscripcion', [
   ],
   inscripcionEstudiante
 );
+
 
 router.post('/ingresar', [
     validarJWT,
