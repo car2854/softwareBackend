@@ -15,7 +15,8 @@ const {
   inscripcionEstudiante, 
   getEstudiantes, 
   ingresarExamen,
-  uninscripcionEstudiante
+  uninscripcionEstudiante,
+  obtenerIngreso
 } = require('../controllers/estudiante.controller');
 
 router.post('/', [
@@ -52,6 +53,11 @@ router.post('/ingresar', [
   ],
   ingresarExamen
 );
+
+router.get('/obtenerIngreso/:examen',
+  validarJWT,
+  obtenerIngreso
+)
 
 router.get('/', validarJWT, getEstudiantes);
 

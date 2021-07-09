@@ -195,10 +195,39 @@ const ingresarExamen = async(req, res = response) => {
 
 }
 
+
+const obtenerIngreso = async (req, res = response) => {
+
+  const estudiante = req.uid;
+  const examen = req.params.examen;
+
+  try {
+
+    const ingresoDB = await Ingreso.find({estudiante,examen});
+
+    res.json({
+      ok: true,
+      ingresoDB,
+    });
+    
+
+    
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: 'Consulte con el administrador'
+    });
+  }
+
+}
+
 module.exports = {
   createEstudiante,
   inscripcionEstudiante,
   getEstudiantes,
   ingresarExamen,
-  uninscripcionEstudiante
+  uninscripcionEstudiante,
+  obtenerIngreso
 }
