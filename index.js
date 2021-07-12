@@ -11,6 +11,16 @@ const { dbConnection } = require('./database/config');
 // Crear servidor
 const app = express();
 
+// Node Server
+const server = require('http').createServer(app);
+module.exports.io = require('socket.io')(server, {
+  cors: {
+    origin: true,
+    credentials: true
+  }
+});
+require('./sockets/index');
+
 // Configurar CORS
 app.use(cors());
 
@@ -42,6 +52,6 @@ app.get('*', (req, res) => {
   res.sendFile( path.resolve(__dirname, 'public/index.html') );
 });
 
-app.listen( process.env.PORT, () => {
+server.listen( process.env.PORT, () => {
   	console.log('Servidor corriendo en puerto: ' + process.env.PORT);
 });
