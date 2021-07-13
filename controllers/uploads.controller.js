@@ -58,6 +58,35 @@ const actualizarImagen = async(req, res = response) => {
 
 }
 
+
+
+const subirImagenTemporal = async(req, res = response) => {
+  
+  try {
+        
+    const {tempFilePath} = req.files.imagen;
+    
+    const resp1 = await cloudinary.uploader.upload(tempFilePath);
+    
+    res.json({
+      ok: true,
+      resp1
+    });
+
+
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      ok: false,
+      msg: "Consulte con el administrador"
+    });
+  }
+
+
+}
+
 module.exports = {
-  actualizarImagen
+  actualizarImagen,
+  subirImagenTemporal
 }

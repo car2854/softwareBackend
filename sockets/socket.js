@@ -4,6 +4,36 @@ const { socketIO } = require('socket.io');
 
 const fetch = require('node-fetch');
 
+
+
+
+const AWS = require('aws-sdk');
+// mybucketpruebareco.s3.us-east-2.amazonaws.com/sheldon.jpg
+const bucket = 'mybucketpruebareco' // the bucketname without s3://
+const photo  = 'sheldon.jpg' // the name of file
+
+const config = new AWS.Config({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION
+}) 
+
+const cliente = new AWS.Rekognition();
+
+// const params = {
+//   Image: {
+//     S3Object: {
+//       Bucket: bucket,
+//       Name: photo
+//     },
+//   },
+//   MaxLabels: 10
+// }
+
+
+
+
+
 const disconnect = (client = Socket) => {
 
   client.on('disconnect', () => {
@@ -18,58 +48,76 @@ const getVideo = (client = Socket, faceapi) => {
 
     const {video, img1, img2, img3} = payload;
 
-    // const labeledFaceDescriptors = await loadLabeledImages(img1, img2, img3, faceapi);
 
-    // const faceMatcher = new globalFace.FaceMatcher(labeledFaceDescriptors, 0.6);
+    
+    // const sourceImage = encodeURIComponent(video);
 
-    // console.log(img1);
+    // const imageBuffer = Buffer.from(decodeURIComponent(sourceImage), 'base64');
 
-    // const referenceImage = await video.default.loadImage(REFERENCE_IMAGE);
+    // console.log(video);
+    
 
-    // const detections = await faceapi.detectAllFaces(referenceImage, 
-    //   new faceapi.TinyFaceDetectorOptions()).withFaceLandmarks().withFaceExpressions();
 
-    //   // console.log(detections);
+    // const getData = getBinary(video);
+    // console.log(getData);
 
-    // client.emit('setVideo', detections);
+    // console.log(video);  
 
-    // const results = resizedDetections.map((d) => faceMatcher.findBestMatch(d.descriptor))
+    const params = {
+      Image: {
+        Bytes: video
+      },
+      MaxLabels: 10
+    }
 
-    console.log(video);
+    cliente.detectLabels(params, function(err, response) {
+      if (err) {
+        console.log(err, err.stack); // an error occurred
+      } else {
+        console.log(`Detected labels for: ${photo}`)
+        response.Labels.forEach(label => {
+          console.log(`Label:      ${label.Name}`)
+          console.log(`Confidence: ${label.Confidence}`)
+          console.log("Instances:")
+          label.Instances.forEach(instance => {
+            let box = instance.BoundingBox
+            console.log("  Bounding box:")
+            console.log(`    Top:        ${box.Top}`)
+            console.log(`    Left:       ${box.Left}`)
+            console.log(`    Width:      ${box.Width}`)
+            console.log(`    Height:     ${box.Height}`)
+            console.log(`  Confidence: ${instance.Confidence}`)
+          })
+          console.log("Parents:")
+          label.Parents.forEach(parent => {
+            console.log(`  ${parent.Name}`)
+          })
+          console.log("------------")
+          console.log("")
+        }) // for response.labels
+      } // if
+    });
+
+
+
+    // client.emit('setVideo', video);
+
+
   });
 
 }
 
-const loadLabeledImages = (img1, img2, img3, faceapi) => {
+function getBinary(base64Image) {
 
-  const labels = [img1, img2, img3];
-  
-  return Promise.all(
-    
-    labels.map(async resp => {
-      
-      try {
-        const descriptions = []
-        console.log(resp);
-        const MODEL_URL = `https://res.cloudinary.com/dpzaj1apd/image/upload/v1625772021/kihdqrlsljdyvjcnh2n7.jpg`;
-        
-        const img = await faceapi.fetchImage(resp);
-      
-        const detections = await faceapi.detectSingleFace(img).withFaceLandmarks().withFaceDescriptor();
-        
-        if (detections){
-          descriptions.push(detections.descriptor)
-        }
-      
-        return new faceapi.LabeledFaceDescriptors(resp, descriptions)
-      } catch (error) {
-        console.log(error);
-      }
-      
-    })
+  var binaryImg = Buffer.from(base64Image, 'base64').toString();
+  var length = binaryImg.length;
+  var ab = new ArrayBuffer(length);
+  var ua = new Uint8Array(ab);
+  for (var i = 0; i < length; i++) {
+      ua[i] = binaryImg.charCodeAt(i);
+  }
 
-  )
-
+  return ab;
 }
 
 
