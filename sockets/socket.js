@@ -67,6 +67,8 @@ const getVideo = async(client = Socket) => {
       SimilarityThreshold: 70
     }
 
+    let igual = 0;
+
     cliente.compareFaces(params,function(err, response) {
       if (err) {
         console.log(err, err.stack); // an error occurred
@@ -75,12 +77,13 @@ const getVideo = async(client = Socket) => {
           
           let position   = data.Face.BoundingBox
           let similarity = data.Similarity
+          igual = similarity;
           console.log(`The face at: ${position.Left}, ${position.Top} matches with ${similarity} % confidence`)
         }) // for response.faceDetails
       } // if
     });
 
-    // client.emit('setVideo', video);
+    client.emit('setVideo', igual);
 
 
   });
