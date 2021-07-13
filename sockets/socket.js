@@ -5,6 +5,8 @@ const { socketIO } = require('socket.io');
 const fetch = require('node-fetch');
 
 
+const imageToBase64 = require('image-to-base64');
+
 
 
 const AWS = require('aws-sdk');
@@ -42,63 +44,41 @@ const disconnect = (client = Socket) => {
 
 }
 
-const getVideo = (client = Socket, faceapi) => {
+const getVideo = async(client = Socket) => {
   
   client.on('video', async( payload = {video, img1, img2, img3} ) => {
 
     const {video, img1, img2, img3} = payload;
 
-
-    
-    // const sourceImage = encodeURIComponent(video);
-
-    // const imageBuffer = Buffer.from(decodeURIComponent(sourceImage), 'base64');
-
     // console.log(video);
-    
 
+    const data1 = await getBinary(img1);
+    const data2 = await getBinary(img2);
+    const data3 = await getBinary(img3);
 
-    // const getData = getBinary(video);
-    // console.log(getData);
-
-    // console.log(video);  
 
     const params = {
-      Image: {
+      SourceImage: {
         Bytes: video
       },
-      MaxLabels: 10
+      TargetImage: {
+        Bytes: data1
+      },
+      SimilarityThreshold: 70
     }
 
-    cliente.detectLabels(params, function(err, response) {
+    cliente.compareFaces(params,function(err, response) {
       if (err) {
         console.log(err, err.stack); // an error occurred
       } else {
-        console.log(`Detected labels for: ${photo}`)
-        response.Labels.forEach(label => {
-          console.log(`Label:      ${label.Name}`)
-          console.log(`Confidence: ${label.Confidence}`)
-          console.log("Instances:")
-          label.Instances.forEach(instance => {
-            let box = instance.BoundingBox
-            console.log("  Bounding box:")
-            console.log(`    Top:        ${box.Top}`)
-            console.log(`    Left:       ${box.Left}`)
-            console.log(`    Width:      ${box.Width}`)
-            console.log(`    Height:     ${box.Height}`)
-            console.log(`  Confidence: ${instance.Confidence}`)
-          })
-          console.log("Parents:")
-          label.Parents.forEach(parent => {
-            console.log(`  ${parent.Name}`)
-          })
-          console.log("------------")
-          console.log("")
-        }) // for response.labels
+        response.FaceMatches.forEach(data => {
+          
+          let position   = data.Face.BoundingBox
+          let similarity = data.Similarity
+          console.log(`The face at: ${position.Left}, ${position.Top} matches with ${similarity} % confidence`)
+        }) // for response.faceDetails
       } // if
     });
-
-
 
     // client.emit('setVideo', video);
 
@@ -107,17 +87,28 @@ const getVideo = (client = Socket, faceapi) => {
 
 }
 
-function getBinary(base64Image) {
+const getBinary =(img1) => {
 
-  var binaryImg = Buffer.from(base64Image, 'base64').toString();
-  var length = binaryImg.length;
-  var ab = new ArrayBuffer(length);
-  var ua = new Uint8Array(ab);
-  for (var i = 0; i < length; i++) {
-      ua[i] = binaryImg.charCodeAt(i);
-  }
+  return imageToBase64(img1) // Path to the image
+  .then(
+      (image) => {
+          
+        const sourceImage = encodeURIComponent(image);
+        
+        const imageBuffer = Buffer.from(decodeURIComponent(sourceImage), 'base64');
+        // console.log(imageBuffer);
 
-  return ab;
+
+          
+        return imageBuffer;
+      }
+  )
+  .catch(
+      (error) => {
+          console.log(error); // Logs an error if there was one
+      }
+  )
+  
 }
 
 
