@@ -82,12 +82,10 @@ const getVideo = (client = Socket) => {
       SimilarityThreshold: 70
     }
     
-    cliente.compareFaces(params,function(err, response) {
+    await cliente.compareFaces(params,function(err, response) {
 
       if (err) {
-        // console.log(err, err.stack); // an error occurred
-        client.emit('setVideo', 0);
-
+        console.log(err, err.stack); // an error occurred
       } else {
         response.FaceMatches.forEach(data => {
           
@@ -95,11 +93,11 @@ const getVideo = (client = Socket) => {
           let similarity = data.Similarity
           // console.log(similarity);
           // client.emit('setVideo', similarity);
-          igual = similarity;
+          // igual = similarity;
           // console.log(igual)
           client.emit('setVideo', similarity);
 
-          // console.log(`The face at: ${position.Left}, ${position.Top} matches with ${similarity} % confidence`)
+          console.log(`The face at: ${position.Left}, ${position.Top} matches with ${similarity} % confidence`)
         })
       } 
     });
@@ -107,7 +105,7 @@ const getVideo = (client = Socket) => {
 
 
 
-    console.log(igual);
+    // console.log(igual);
 
     // const data = {
     //   igual
@@ -121,6 +119,8 @@ const getVideo = (client = Socket) => {
 }
 
 const getBinary =(img1) => {
+
+  // console.log('hola');
 
   return imageToBase64(img1) // Path to the image
   .then(
