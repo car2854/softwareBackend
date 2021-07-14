@@ -46,43 +46,28 @@ const disconnect = (client = Socket) => {
 
 const getVideo = (client = Socket) => {
   
-  client.on('video', async( payload = {video, img1, img2, img3} ) => {
+  client.on('video', ( payload = {video, id, img1, img2, img3} ) => {
 
-    const {video, img1, img2, img3} = payload;
+    const {video, id} = payload;
 
-    // console.log(video);
-
-    // const {data1, data2, data3} = await Promise.all(
-    //   getBinary(img1),
-    //   getBinary(img2),
-    //   getBinary(img3),
-    // );
-
-    // const data1 = await getBinary(img1);
-
-    const data1 = await getBinary(img1);
-
-    // const data2 = await getBinary(img2);
-    // const data3 = await getBinary(img3);
-
-    // const {value1, value2, value3 } = await Promise.all(
-    //   verigicar(video, data1),
-    //   verigicar(video, data2),
-    //   verigicar(video, data3)
-    // );
-
+    const id1 = id + '1.' + type(img1);
+    const id2 = id + '2.' + type(img2);
+    const id3 = id + '3.' + type(img3);
 
     const params = {
       SourceImage: {
         Bytes: video
       },
       TargetImage: {
-        Bytes: data1
+        S3Object: {
+          Bucket: 'mybucketpruebareco',
+          Name: id1
+        },
       },
       SimilarityThreshold: 70
     }
     
-    await cliente.compareFaces(params,function(err, response) {
+    cliente.compareFaces(params,function(err, response) {
 
       if (err) {
         console.log(err, err.stack); // an error occurred
@@ -95,7 +80,7 @@ const getVideo = (client = Socket) => {
           // client.emit('setVideo', similarity);
           // igual = similarity;
           // console.log(igual)
-          client.emit('setVideo', similarity);
+          // client.emit('setVideo', similarity);
 
           console.log(`The face at: ${position.Left}, ${position.Top} matches with ${similarity} % confidence`)
         })
@@ -118,31 +103,50 @@ const getVideo = (client = Socket) => {
 
 }
 
-const getBinary =(img1) => {
+const type = (img) => {
 
-  // console.log('hola');
+  const cantidad = img.length;
 
-  return imageToBase64(img1) // Path to the image
-  .then(
-      (image) => {
-          
-        const sourceImage = encodeURIComponent(image);
-        
-        const imageBuffer = Buffer.from(decodeURIComponent(sourceImage), 'base64');
-        // console.log(imageBuffer);
+  let nuevoTexto = "";
 
-
-          
-        return imageBuffer;
+  for (let i = cantidad; i>0; i--){
+    if (img[i] === '.'){
+        i = 0;
+    }else{
+      if (img[i]){
+          nuevoTexto = img[i] + nuevoTexto;
       }
-  )
-  .catch(
-      (error) => {
-          console.log(error); // Logs an error if there was one
-      }
-  )
-  
+    }
+  }
+  return nuevoTexto;
 }
+
+
+// const getBinary =(img1) => {
+
+//   // console.log('hola');
+
+//   return imageToBase64(img1) // Path to the image
+//   .then(
+//       (image) => {
+          
+//         const sourceImage = encodeURIComponent(image);
+        
+//         const imageBuffer = Buffer.from(decodeURIComponent(sourceImage), 'base64');
+//         // console.log(imageBuffer);
+
+
+          
+//         return imageBuffer;
+//       }
+//   )
+//   .catch(
+//       (error) => {
+//           console.log(error); // Logs an error if there was one
+//       }
+//   )
+  
+// }
 
 
 module.exports = {
