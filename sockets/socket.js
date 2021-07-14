@@ -44,7 +44,7 @@ const disconnect = (client = Socket) => {
 
 }
 
-const getVideo = async(client = Socket) => {
+const getVideo = (client = Socket) => {
   
   client.on('video', async( payload = {video, img1, img2, img3} ) => {
 
@@ -52,9 +52,24 @@ const getVideo = async(client = Socket) => {
 
     // console.log(video);
 
+    // const {data1, data2, data3} = await Promise.all(
+    //   getBinary(img1),
+    //   getBinary(img2),
+    //   getBinary(img3),
+    // );
+
+    // const data1 = await getBinary(img1);
+
     const data1 = await getBinary(img1);
-    const data2 = await getBinary(img2);
-    const data3 = await getBinary(img3);
+
+    // const data2 = await getBinary(img2);
+    // const data3 = await getBinary(img3);
+
+    // const {value1, value2, value3 } = await Promise.all(
+    //   verigicar(video, data1),
+    //   verigicar(video, data2),
+    //   verigicar(video, data3)
+    // );
 
 
     const params = {
@@ -66,24 +81,39 @@ const getVideo = async(client = Socket) => {
       },
       SimilarityThreshold: 70
     }
-
-    let igual = 0;
-
+    
     cliente.compareFaces(params,function(err, response) {
+
       if (err) {
-        console.log(err, err.stack); // an error occurred
+        // console.log(err, err.stack); // an error occurred
+        client.emit('setVideo', 0);
+
       } else {
         response.FaceMatches.forEach(data => {
           
           let position   = data.Face.BoundingBox
           let similarity = data.Similarity
+          // console.log(similarity);
+          // client.emit('setVideo', similarity);
           igual = similarity;
-          console.log(`The face at: ${position.Left}, ${position.Top} matches with ${similarity} % confidence`)
-        }) // for response.faceDetails
-      } // if
+          // console.log(igual)
+          client.emit('setVideo', similarity);
+
+          // console.log(`The face at: ${position.Left}, ${position.Top} matches with ${similarity} % confidence`)
+        })
+      } 
     });
 
-    client.emit('setVideo', igual);
+
+
+
+    console.log(igual);
+
+    // const data = {
+    //   igual
+    // }
+
+    // client.emit('setVideo', data);
 
 
   });

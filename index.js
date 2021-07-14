@@ -48,6 +48,8 @@ app.use( '/api/examen', require('./routes/examen') );
 
 app.use( '/api/upload', require('./routes/uploads') );
 
+app.use( '/api/verify', require('./routes/verify') );
+
 app.get('*', (req, res) => {
   res.sendFile( path.resolve(__dirname, 'public/index.html') );
 });
