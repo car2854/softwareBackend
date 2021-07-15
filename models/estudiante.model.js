@@ -22,6 +22,15 @@ const EstudianteSchema = Schema({
     },
     foto3: {
         type: String,
+    },
+    bucket1: {
+      type: String
+    },
+    bucket2: {
+      type: String
+    },
+    bucket3: {
+      type: String
     }
 });
 

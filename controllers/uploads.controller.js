@@ -79,8 +79,14 @@ const actualizarImagen = async(req, res = response) => {
     estudianteDB.foto1 = resp1.secure_url;
     estudianteDB.foto2 = resp2.secure_url;
     estudianteDB.foto3 = resp3.secure_url;
+    
+    estudianteDB.bucket1 = data1.Key;
+    estudianteDB.bucket2 = data2.Key;
+    estudianteDB.bucket3 = data3.Key;
 
     estudianteDB.save();
+
+    console.log(estudianteDB);
 
     res.json({
       ok: true,
